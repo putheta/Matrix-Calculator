@@ -1,7 +1,8 @@
 import math
+import numpy as np
 import random
 import copy
-3
+
 main = []
 b = []
 #----------------------------------------------------------#
@@ -22,6 +23,18 @@ def create(row,col) :
             lst.append(num)
         main.append(lst)
 
+# def create(row, col):
+#     for i in range(row):
+#         lst = []
+#         print(f"Enter values for row {i + 1} (space-separated):")
+#         values = input().split()
+#         for j in range(col):
+#             if j < len(values):
+#                 lst.append(int(values[j]))  # แปลงค่าจาก string เป็น int
+#             else:
+#                 lst.append(0)  # ถ้าจำนวนค่าที่ป้อนไม่พอ ให้เติมเป็น 0
+#         main.append(lst)
+        
 def show(x) :
     for row in range(len(x)) :
         print(x[row])
@@ -87,6 +100,18 @@ def Gauss_J(main) :
                 break
     return answer
 
+def normalize_pivot(matrix):
+    """Ensure that pivot elements are 1 by dividing rows by their pivot."""
+    for i in range(min(len(matrix), len(matrix[0]))):
+        if matrix[i][i] != 0:
+            pivot = matrix[i][i]
+            for j in range(len(matrix[i])):
+                matrix[i][j] /= pivot
+    return matrix
+
+# def answer(main):
+
+
 #----------------------------------------------------------#
 
 create(row,col)
@@ -101,18 +126,21 @@ for i in range(row) :
 print("REF : ")
 show(main)
 
-#for i in range(row+1) :
-#    multiply(Gauss_J(main),main)
-#    main = copy.deepcopy(multiply(Gauss_J(main),main))
-#print("RREF : ")
-#show(main)
+# Normalize pivot to 1
+main = normalize_pivot(main)
+print("Normalized REF (with pivot as 1):")
+show(main)
 
+# Reduced Row Echelon Form
 for row in range(len(identity())) :
     for col in range(len(identity()[row])) :
         if row!=col and main[row][col] != 0  :
-                multiply(Gauss_J(main),main)
-                main = copy.deepcopy(multiply(Gauss_J(main),main))
-            
-            
-print("RREF")       
+            multiply(Gauss_J(main),main)
+            main = copy.deepcopy(multiply(Gauss_J(main),main))
+
+# Normalize pivot to 1 (for RREF)
+main = normalize_pivot(main)
+print("RREF with normalized pivot:")
 show(main)
+
+# print(main[1][1])
