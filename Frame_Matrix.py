@@ -1,7 +1,7 @@
 import numpy as np
 
 row = int(input("Input row numbers: "))
-col = int(input("Input column numbers: "))
+col = int(input("Input column numbers (including the constant column): "))
 
 def row_operation(E, A, i, j, scalar):
     """Perform row operation on matrix A and update elementary matrix E.
@@ -64,13 +64,34 @@ def create_matrix():
     # Loop to take input for each row
     print("Enter the matrix row by row:")
     for i in range(row):
-        matrix_row = list(map(int, input(f"Enter elements for row {i + 1} (space-separated): ").split()))
+        matrix_row = list(map(float, input(f"Enter elements for row {i + 1} (space-separated): ").split()))
         if len(matrix_row) != col:
             print(f"Error: Row {i + 1} must contain exactly {col} elements.")
             return None
         matrix.append(matrix_row)
     
     return np.array(matrix, dtype=float)
+
+def extract_solution(rref_matrix):
+    """Extract the solution from the RREF matrix.
+    
+    Assumes that the last column of the matrix is the constants, and the preceding columns are the variables.
+    """
+    num_rows, num_cols = rref_matrix.shape
+    solution = np.zeros(num_cols - 1)
+    
+    for i in range(num_rows):
+        # Check if the row corresponds to a valid equation
+        if np.all(rref_matrix[i, :-1] == 0):
+            if rref_matrix[i, -1] != 0:
+                print("No solution: row with 0s has a non-zero constant.")
+                return None
+        else:
+            # Find the first non-zero element (which should be the pivot) and extract the corresponding variable
+            pivot_col = np.where(rref_matrix[i, :-1] != 0)[0][0]
+            solution[pivot_col] = rref_matrix[i, -1]
+    
+    return solution
 
 # Example usage:
 A = create_matrix()
@@ -83,9 +104,9 @@ if A is not None:
     print("\nRREF Matrix:")
     print(rref_matrix)
     
-    # Use len instead of row for correct indexing
-    print("\nLast element of the first row of the RREF Matrix:")
-    print(rref_matrix[0][len(rref_matrix[0]) - 1])
-    
-    print("\nElementary Matrix (for transformation):")
-    print(E)
+    solution = extract_solution(rref_matrix)
+    if solution is not None:
+        print("\nSolution to the system of equations:")
+        print(solution)
+    else:
+        print("\nNo solution exists for the given system of equations.")
