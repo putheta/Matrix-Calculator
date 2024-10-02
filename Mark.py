@@ -12,7 +12,6 @@ def select_argument_M():
     return Start_M
 
 def create_matrix():
-    """Helper function to create a matrix from user input."""
     row_f = row
     col_f = col
     matrix = []
