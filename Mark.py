@@ -1,21 +1,9 @@
 import numpy as np
 
-def select_argument_M():
-    argumant_M = input("Argument Matrix? Y/N: ")
-    if argumant_M == "y" or argumant_M == "Y":
-        Start_M = "Yes this is argument matrix [A|b]!"
-    elif argumant_M == "n" or argumant_M == "N":
-        Start_M = "No this is only matrix A!"
-    else:
-        print("Please select Y/N")
-        Start_M = None 
-    return Start_M
-
 def create_matrix():
     row_f = row
     col_f = col
     matrix = []
-    
     print("Enter the matrix row by row:")
     for i in range(row):
         matrix_row = list(map(int, input(f"Enter elements for row {i+1} (space-separated): ").split()))
@@ -23,7 +11,6 @@ def create_matrix():
             print(f"Error: Row {i+1} must contain exactly {col} elements.")
             return None
         matrix.append(matrix_row)
-    
     return np.array(matrix, dtype=float)
 
  
@@ -33,7 +20,6 @@ def elementary_op(A):
         if A[i, i] == 0:
             print(f"Error: Zero pivot found at row {i+1}. Row swapping needed, but not implemented.")
             return None
-        
         for j in range(i + 1, row): 
             E = np.eye(row) 
             factor = -(A[j, i] / A[i, i]) 
@@ -64,18 +50,26 @@ def rref(A):
                 print(f"Elementary Matrix for eliminating A[{j+1},{i+1}]:\n{E}\n")
                 A = E.dot(A)
                 print(f"Matrix after eliminating A[{j+1},{i+1}]:\n{A}\n")
-    
+
     print("Final RREF Matrix:")
     print(f"{A}\n")
-    return A
+    print("Free Variable:")
+    # frame = []
+    # for i in range(row):
+    #     for j in range(col):
+    #         frame = np.append(A[i][j])
+    #     print(frame)
+    # return A
+
+
 
 # Example usage:
 print("Hello I am Elementary Matrix!")
+argumant_M = input("Argument Matrix? Y/N: ")
 
-response = select_argument_M()
-    
-if response : 
-    print(f"User selected: {response}")
+if argumant_M == "y" or argumant_M == "Y":
+    Start_M = "Yes this is argument matrix [A|b]!"
+    print(f"User selected: {Start_M}")
     row = int(input("Input row numbers: "))
     col = int(input("Input column numbers: "))
     A = create_matrix()
@@ -84,6 +78,23 @@ if response :
         print(f"{A} \n") 
         A = elementary_op(A)
         if A is not None:
-            rref(A)
+            rref(A)           
+elif argumant_M == "n" or argumant_M == "N":
+    Start_M = "No this is only matrix A!"
+    print(f"User selected: {Start_M}")
+    row = int(input("Input row numbers: "))
+    col = int(input("Input column numbers: "))
+    A = create_matrix()
+    if A is not None: 
+        print("\nOriginal Matrix:")
+        print(f"{A} \n") 
+        A = elementary_op(A)
+        if A is not None:
+            rref(A)        
+else:
+    print("Please select Y/N")
+    Start_M = None
+           
+
     
 
