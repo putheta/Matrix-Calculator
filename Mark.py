@@ -90,10 +90,6 @@ elif argumant_M == "n" or argumant_M == "N":
         print(f"{A} \n") 
         A = elementary_op(A)
         if A is not None:
-            rref(A)        
-else:
-    print("Please select Y/N")
-    Start_M = None
-           
-
+            rref(A)
     
+
