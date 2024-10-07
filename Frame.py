@@ -20,25 +20,29 @@ def swap_rows(A, row1, row2):
 def elementary_op(A):
     row, col = A.shape
     for i in range(row):
+        # Check for a zero pivot
         if A[i, i] == 0:
             for j in range(i + 1, row):
-                if A[j, i] != 0:
+                if A[j, i] != 0:  # Find a row with a non-zero entry to swap
                     A = swap_rows(A, i, j)
                     break
             else:
-                print(f"Warning: Cannot find a non-zero pivot for column {i+1}. Free variables may exist.")
-                continue
+                print(f"Warning: Column {i+1} has no non-zero pivot. Free variables may exist.")
+                continue  # Move to the next column if no swap is possible
         
+        # Scale the pivot row
+        A[i] = A[i] / A[i, i]  
+        
+        # Eliminate below the pivot
         for j in range(i + 1, row): 
             if A[j, i] != 0:  
-                E = np.eye(row)
-                factor = -(A[j, i] / A[i, i])
-                E[j, i] = factor
-                A = E.dot(A)
+                factor = A[j, i]
+                A[j] -= factor * A[i]
     
     print("Final Upper Triangular Matrix:")
     print(f"{A}\n")
     return A
+
 
 def rrefm(A):
     row, col = A.shape
@@ -65,68 +69,71 @@ def rrefm(A):
 def rref(A):
     row, col = A.shape
 
+    # Check for inconsistency
     for i in range(row):
-        if np.all(A[i, :-1] == 0) and A[i, -1] != 0: 
+        if np.all(A[i, :-1] == 0) and A[i, -1] != 0:
             print("The system is inconsistent.")
-            print(f"Inconsistency found in row {i+1}: {A[i]}")
-            return None 
+            return None
 
-   
+    # Perform Gaussian elimination
     for i in range(row):
-        if A[i, i] != 1 and A[i, i] != 0:  
-            A[i] = A[i] / A[i, i]  
-            print(f"Scaled row {i+1} to make pivot 1:\n{A}\n")
+        # If pivot is non-zero, scale the row
+        if A[i, i] != 0:
+            A[i] = A[i] / A[i, i]
+        else:
+            continue  # Skip over any zero pivot rows
+        
+        # Eliminate other rows
         for j in range(row):
-            if j != i and A[j, i] != 0:  
+            if j != i and A[j, i] != 0:
                 factor = A[j, i]
-                A[j] = A[j] - factor * A[i]
-                print(f"Eliminated A[{j+1},{i+1}] using row {i+1}:\n{A}\n")
-    
-    print("Final RREF Matrix:")
-    print(f"{A}\n")
+                A[j] -= factor * A[i]
 
-   
+    # Solution extraction
     solution = np.zeros(col - 1)
     leading_cols = []
 
     for i in range(row):
         pivot_col = -1
         for j in range(col - 1):
-            if A[i, j] == 1:  
+            if A[i, j] == 1:
                 pivot_col = j
                 break
         
         if pivot_col >= 0:
             leading_cols.append(pivot_col)
             solution[pivot_col] = A[i, -1] 
-  
+    
+    # Free variables handling
     free_vars = [j for j in range(col - 1) if j not in leading_cols]
     
     if free_vars:
-        print("Free variables exist:")
+        print("Free variables exist. Setting them to arbitrary values.")
         for j in free_vars:
             print(f"x{j+1} is free, setting x{j+1} = 1")
-            solution[j] = 1  
+            solution[j] = 1
+    
+    # Final solution refinement
     for i in range(row):
         pivot_col = -1
         for j in range(col - 1):
-            if A[i, j] == 1: 
+            if A[i, j] == 1:
                 pivot_col = j
                 break
         
         if pivot_col >= 0:
-            rhs = A[i, -1] 
+            rhs = A[i, -1]
             for j in range(col - 1):
                 if j != pivot_col:
-                    rhs -= A[i, j] * solution[j] 
+                    rhs -= A[i, j] * solution[j]
             solution[pivot_col] = rhs
 
-    #Solution
     print("Solution:")
     for i, x in enumerate(solution):
-        print(f"x{i+1} = {x}")  
+        print(f"x{i+1} = {x}")
 
     return A
+
 
 #Main
 print("Hello, I am Elementary Matrix!")
