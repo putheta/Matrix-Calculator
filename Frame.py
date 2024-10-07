@@ -21,18 +21,16 @@ def elementary_op(A):
     row, col = A.shape
     for i in range(row):
         if A[i, i] == 0:
-            # Find a row below with a non-zero element in the same column to swap with
             for j in range(i + 1, row):
                 if A[j, i] != 0:
                     A = swap_rows(A, i, j)
                     break
             else:
-                # If no row can be swapped, continue the elimination but mark this as a free variable case
                 print(f"Warning: Cannot find a non-zero pivot for column {i+1}. Free variables may exist.")
                 continue
         
         for j in range(i + 1, row): 
-            if A[j, i] != 0:  # Proceed only if there's something to eliminate
+            if A[j, i] != 0:  
                 E = np.eye(row)
                 factor = -(A[j, i] / A[i, i])
                 E[j, i] = factor
@@ -67,20 +65,19 @@ def rrefm(A):
 def rref(A):
     row, col = A.shape
 
-    # Step 1: Check for consistency first
     for i in range(row):
-        if np.all(A[i, :-1] == 0) and A[i, -1] != 0:  # Check for the form [0, 0, ..., 0 | c] where c != 0
+        if np.all(A[i, :-1] == 0) and A[i, -1] != 0: 
             print("The system is inconsistent.")
             print(f"Inconsistency found in row {i+1}: {A[i]}")
-            return None  # Early return for inconsistent systems
+            return None 
 
-    # Step 2: Gaussian elimination to get RREF form
+   
     for i in range(row):
-        if A[i, i] != 1 and A[i, i] != 0:  # Avoid dividing by 0
-            A[i] = A[i] / A[i, i]  # Scale row to make pivot 1
+        if A[i, i] != 1 and A[i, i] != 0:  
+            A[i] = A[i] / A[i, i]  
             print(f"Scaled row {i+1} to make pivot 1:\n{A}\n")
         for j in range(row):
-            if j != i and A[j, i] != 0:  # Eliminate other entries in this column
+            if j != i and A[j, i] != 0:  
                 factor = A[j, i]
                 A[j] = A[j] - factor * A[i]
                 print(f"Eliminated A[{j+1},{i+1}] using row {i+1}:\n{A}\n")
@@ -88,53 +85,50 @@ def rref(A):
     print("Final RREF Matrix:")
     print(f"{A}\n")
 
-    # Step 3: Solve and print the solution
+   
     solution = np.zeros(col - 1)
     leading_cols = []
 
     for i in range(row):
         pivot_col = -1
         for j in range(col - 1):
-            if A[i, j] == 1:  # Find pivot column
+            if A[i, j] == 1:  
                 pivot_col = j
                 break
         
         if pivot_col >= 0:
             leading_cols.append(pivot_col)
-            solution[pivot_col] = A[i, -1]  # Assign solution to leading variable
-    
-    # Identify and print free variables
+            solution[pivot_col] = A[i, -1] 
+  
     free_vars = [j for j in range(col - 1) if j not in leading_cols]
     
     if free_vars:
         print("Free variables exist:")
         for j in free_vars:
             print(f"x{j+1} is free, setting x{j+1} = 1")
-            solution[j] = 1  # Set free variables to 1 for calculation
-
-    # Calculate dependent variables again based on free variables
+            solution[j] = 1  
     for i in range(row):
         pivot_col = -1
         for j in range(col - 1):
-            if A[i, j] == 1:  # Identify pivot column
+            if A[i, j] == 1: 
                 pivot_col = j
                 break
         
         if pivot_col >= 0:
-            rhs = A[i, -1]  # Right-hand side (constant)
+            rhs = A[i, -1] 
             for j in range(col - 1):
                 if j != pivot_col:
-                    rhs -= A[i, j] * solution[j]  # Subtract free variable contributions
+                    rhs -= A[i, j] * solution[j] 
             solution[pivot_col] = rhs
 
-    # Final Solution Output
+    #Solution
     print("Solution:")
     for i, x in enumerate(solution):
-        print(f"x{i+1} = {x}")  # Output raw float value with full precision
+        print(f"x{i+1} = {x}")  
 
     return A
 
-# Main execution
+#Main
 print("Hello, I am Elementary Matrix!")
 argumant_M = input("Argument Matrix? Y/N: ")
 
