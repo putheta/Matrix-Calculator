@@ -13,7 +13,6 @@ def create_matrix():
         matrix.append(matrix_row)
     return np.array(matrix, dtype=float)
 
- 
 def elementary_op(A):
     row, col = A.shape
     for i in range(row): 
@@ -54,14 +53,6 @@ def rref(A):
     print("Final RREF Matrix:")
     print(f"{A}\n")
     print("Free Variable:")
-    # frame = []
-    # for i in range(row):
-    #     for j in range(col):
-    #         frame = np.append(A[i][j])
-    #     print(frame)
-    # return A
-
-
 
 # Example usage:
 print("Hello I am Elementary Matrix!")
@@ -78,7 +69,8 @@ if argumant_M == "y" or argumant_M == "Y":
         print(f"{A} \n") 
         A = elementary_op(A)
         if A is not None:
-            rref(A)           
+            rref(A)       
+                
 elif argumant_M == "n" or argumant_M == "N":
     Start_M = "No this is only matrix A!"
     print(f"User selected: {Start_M}")
