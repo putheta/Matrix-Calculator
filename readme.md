@@ -1,5 +1,2 @@
 # Matrix-Calculator
-A matrix calculator using python for calculated while consisted of two approach.
-- Pure Python
-- Numpy
-
+A matrix calculator written in Python, impelmented using two approaches: Pure Python and Numpy.
